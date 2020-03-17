@@ -59,7 +59,6 @@ router.get('/hands/:id', requireToken, (req, res, next) => {
 // POST /hands
 router.post('/hands', requireToken, (req, res, next) => {
   // set owner of new hand to be current user
-  console.log(req.body)
   req.body.hand.owner = req.user.id
 
   Hand.create(req.body.hand)
