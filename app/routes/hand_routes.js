@@ -98,6 +98,16 @@ router.patch('/hands/:id', requireToken, removeBlanks, (req, res, next) => {
 
 // DESTROY
 // DELETE /hands/5a7db6c74d55bc51bdf39793
+router.delete('/hands/all', requireToken, (req, res, next) => {
+  Hand.remove()
+    // send back 204 and no content if the deletion succeeded
+    .then(() => res.sendStatus(204))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
+// DESTROY
+// DELETE /hands/5a7db6c74d55bc51bdf39793
 router.delete('/hands/:id', requireToken, (req, res, next) => {
   Hand.findById(req.params.id)
     .then(handle404)
