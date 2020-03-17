@@ -6,7 +6,7 @@ const handSchema = new mongoose.Schema({
     required: true
   },
   current_bet: {
-    type: String,
+    type: Number,
     required: true
   },
   owner: {
