@@ -12,13 +12,16 @@ const tableSchema = new mongoose.Schema({
   players: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
+      ref: 'User'
     }
   ],
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true
+  },
+  owner_name: {
+    type: String,
     required: true
   }
 }, {
