@@ -28,6 +28,20 @@ const requireToken = passport.authenticate('bearer', { session: false })
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
 
+router.get('/getUsername', requireToken, (req, res, next) => {
+  User.findById(req.user.id)
+    .then(user => res.status(200).json({ user: user.toObject() }))
+  // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
+router.patch('/makeUsername', requireToken, (req, res, next) => {
+  User.findByIdAndUpdate(req.user.id, { username: req.body.user.username })
+    .then(user => res.status(200).json({ user: user.toObject() }))
+  // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
 // SIGN UP
 // POST /sign-up
 router.post('/sign-up', (req, res, next) => {
