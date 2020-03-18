@@ -21,6 +21,9 @@ const User = require('../models/user')
 // so that a token MUST be passed for that route to be available
 // it will also set `res.user`
 const requireToken = passport.authenticate('bearer', { session: false })
+// const removeBlanks = require('../../lib/remove_blank_fields')
+// const customErrors = require('../../lib/custom_errors')
+// const handle404 = customErrors.handle404
 
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()

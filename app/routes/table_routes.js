@@ -72,6 +72,24 @@ router.post('/tables', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+router.patch('/tables/join/:id', requireToken, removeBlanks, (req, res, next) => {
+  Table.findByIdAndUpdate(req.params.id, { $addToSet: { players: req.user.id } }, { new: true, useFindAndModify: false })
+    .then(handle404)
+    // if that succeeded, return 204 and no JSON
+    .then(() => res.sendStatus(204))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
+router.patch('/tables/leave/:id', requireToken, removeBlanks, (req, res, next) => {
+  Table.findByIdAndUpdate(req.params.id, { $pull: { players: req.user.id } }, { new: true, useFindAndModify: false })
+    .then(handle404)
+    // if that succeeded, return 204 and no JSON
+    .then(() => res.sendStatus(204))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
 // UPDATE
 // PATCH /tables/5a7db6c74d55bc51bdf39793
 router.patch('/tables/:id', requireToken, removeBlanks, (req, res, next) => {

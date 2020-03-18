@@ -12,7 +12,8 @@ const tableSchema = new mongoose.Schema({
   players: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      unique: true
     }
   ],
   owner: {
