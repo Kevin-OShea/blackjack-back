@@ -35,6 +35,13 @@ router.get('/getUsername', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+router.get('/getUsers', (req, res, next) => {
+  User.find()
+    .then(user => res.status(200).json({ user: user }))
+  // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
 router.patch('/makeUsername', requireToken, (req, res, next) => {
   User.findByIdAndUpdate(req.user.id, { username: req.body.user.username })
     .then(user => res.status(200).json({ user: user.toObject() }))

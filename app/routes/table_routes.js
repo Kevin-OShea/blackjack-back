@@ -24,8 +24,33 @@ const removeBlanks = require('../../lib/remove_blank_fields')
 // it will also set `req.user`
 const requireToken = passport.authenticate('bearer', { session: false })
 
+const updateUsersCards = require('../../lib/updateUsersCards')
+
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
+
+// INDEX
+// GET /tables
+router.get('/tables/gameId', (req, res, next) => {
+  Table.find()
+    // respond with status 200 and JSON of the tables
+    .then(tables => res.status(200).json({ tables: tables }))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
+// INDEX
+// GET /tables
+router.post('/tables/users', requireToken, (req, res, next) => {
+  Table.find()
+    .then(hands => {
+      updateUsersCards(req.body, hands)
+    })
+    // respond with status 200 and JSON of the tables
+    .then(tables => res.status(200).json({ tables: tables }))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
 
 // INDEX
 // GET /tables

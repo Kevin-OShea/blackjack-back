@@ -23,6 +23,8 @@ const removeBlanks = require('../../lib/remove_blank_fields')
 // so that a token MUST be passed for that route to be available
 // it will also set `req.user`
 const requireToken = passport.authenticate('bearer', { session: false })
+// const createUsersHand = require('../../lib/createUsersHand')
+const user = require('../../lib/createUsersHand')
 
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
@@ -63,6 +65,11 @@ router.post('/hands', requireToken, (req, res, next) => {
 
   Hand.create(req.body.hand)
     // respond to succesful `create` with status 201 and JSON of new "hand"
+    .then(newHand => {
+      user.createUsersHand(newHand, req.user._id)
+
+      return newHand
+    })
     .then(hand => {
       res.status(201).json({ hand: hand.toObject() })
     })

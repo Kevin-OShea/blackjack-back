@@ -12,10 +12,13 @@ const tableSchema = new mongoose.Schema({
   players: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      unique: true
+      ref: 'User'
     }
   ],
+  game_id: {
+    type: Number,
+    unique: true
+  },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
