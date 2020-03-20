@@ -42,6 +42,7 @@ router.get('/tables/gameId', (req, res, next) => {
 // INDEX
 // GET /tables
 router.post('/tables/users', requireToken, (req, res, next) => {
+  console.log(req)
   Table.find()
     .then(hands => {
       updateUsersCards(req.body, hands)
