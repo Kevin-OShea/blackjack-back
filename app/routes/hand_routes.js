@@ -63,6 +63,10 @@ router.post('/hands', requireToken, (req, res, next) => {
   // set owner of new hand to be current user
   req.body.hand.owner = req.user.id
 
+  // if (req.user.hand.length > 0) {
+  //   res.status(409).json('Already Created')
+  //   return
+  // }
   Hand.create(req.body.hand)
     // respond to succesful `create` with status 201 and JSON of new "hand"
     .then(newHand => {

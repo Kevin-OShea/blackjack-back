@@ -24,7 +24,7 @@ const removeBlanks = require('../../lib/remove_blank_fields')
 // it will also set `req.user`
 const requireToken = passport.authenticate('bearer', { session: false })
 
-const updateUsersCards = require('../../lib/updateUsersCards')
+const user = require('../../lib/userOutRoute')
 
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
@@ -33,20 +33,6 @@ const router = express.Router()
 // GET /tables
 router.get('/tables/gameId', (req, res, next) => {
   Table.find()
-    // respond with status 200 and JSON of the tables
-    .then(tables => res.status(200).json({ tables: tables }))
-    // if an error occurs, pass it to the handler
-    .catch(next)
-})
-
-// INDEX
-// GET /tables
-router.post('/tables/users', requireToken, (req, res, next) => {
-  console.log(req)
-  Table.find()
-    .then(hands => {
-      updateUsersCards(req.body, hands)
-    })
     // respond with status 200 and JSON of the tables
     .then(tables => res.status(200).json({ tables: tables }))
     // if an error occurs, pass it to the handler
@@ -81,9 +67,26 @@ router.get('/tables/:id', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+// INDEX
+// GET /tables
+router.post('/tables/users', requireToken, (req, res, next) => {
+  console.log('/tables/users')
+  console.log(req)
+  Table.find()
+    .then(players => {
+      user.updateUsersCards(req.body, players)
+    })
+    // respond with status 200 and JSON of the tables
+    .then(tables => res.status(200).json({ tables: tables }))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
 // CREATE
 // POST /tables
 router.post('/tables', requireToken, (req, res, next) => {
+  console.log('/tables')
+  console.log(req.hand_id)
   // set owner of new table to be current user
   req.body.table.owner = req.user.id
 
