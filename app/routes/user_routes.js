@@ -153,6 +153,23 @@ router.patch('/change-password', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+router.patch('/deleteUserHands', requireToken, (req, res, next) => {
+  // `req.user` will be determined by decoding the token payload
+  User.find()
+    .then(user => {
+      for (let i = 0; i < user.length; i++) {
+        console.log('user')
+        console.log(user[i])
+
+        User.findByIdAndUpdate(user[i]._id, { $set: { hand: [] } }, { new: true, useFindAndModify: false })
+          .then(hand => console.log('updated'))
+          .catch(error => console.log(error))
+      }
+    })
+
+    .catch(next)
+})
+
 router.delete('/sign-out', requireToken, (req, res, next) => {
   // create a new random token for the user, invalidating the current one
   req.user.token = crypto.randomBytes(16)
