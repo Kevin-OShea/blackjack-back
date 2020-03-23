@@ -67,13 +67,53 @@ router.get('/tables/:id', requireToken, (req, res, next) => {
     .catch(next)
 })
 
-// INDEX
+// INDEX Deal tables
 // GET /tables
-router.post('/tables/users', requireToken, (req, res, next) => {
-  console.log('/tables/users')
-  console.log(req)
-  Table.find()
+router.post('/tables/users/:id', requireToken, (req, res, next) => {
+  Table.findById(req.params.id)
+    .then(handle404)
+    .then(cards => {
+      console.log(cards)
+      let oldCards = cards.cards
+      let oldCardsArray = oldCards.split('')
+      const length = cards.cards.length - 1
+      let index = 0
+      const dealCards = [[], [], [], []]
+      const x = cards.players.length * 2
+      for (let i = 0; i < x; i++) {
+        if (i % 2 === 0 && i !== 0) {
+          index += 1
+        }
+        const cardIndx = Math.floor(Math.random() * length)
+        const card = oldCards[cardIndx]
+        dealCards[index].push(card)
+        oldCardsArray[cardIndx] = ''
+      }
+      let removed = ''
+      req.body.update.data = dealCards
+      for (let i = 0; i < oldCardsArray.length; i++) {
+        if (oldCardsArray[i] !== '') {
+          removed = removed + oldCardsArray[i]
+        } else {
+          console.log('removed letter')
+          console.log(oldCardsArray[i])
+        }
+      }
+      cards.removed = removed
+      console.log(removed)
+       Table.findByIdAndUpdate(req.params.id, { cards: removed })
+      // Table.findByIdAndUpdate(req.params.id, { cards: 'A123456789xjqkA123456789xjqkA123456789xjqkA123456789xjqk' })
+        .then(a => a)
+        .catch(b => b)
+
+      // console.log('cards')
+      // console.log(cards.removed)
+      return cards
+    })
     .then(players => {
+      // console.log(players)
+      // console.log('bpdy')
+      // console.log(req.body.update.data)
       user.updateUsersCards(req.body, players)
     })
     // respond with status 200 and JSON of the tables
