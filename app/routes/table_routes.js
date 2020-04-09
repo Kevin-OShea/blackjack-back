@@ -101,7 +101,7 @@ router.post('/tables/users/:id', requireToken, (req, res, next) => {
       }
       cards.removed = removed
       console.log(removed)
-       Table.findByIdAndUpdate(req.params.id, { cards: removed })
+      Table.findByIdAndUpdate(req.params.id, { cards: removed })
       // Table.findByIdAndUpdate(req.params.id, { cards: 'A123456789xjqkA123456789xjqkA123456789xjqkA123456789xjqk' })
         .then(a => a)
         .catch(b => b)
@@ -115,6 +115,44 @@ router.post('/tables/users/:id', requireToken, (req, res, next) => {
       // console.log('bpdy')
       // console.log(req.body.update.data)
       user.updateUsersCards(req.body, players)
+    })
+    // respond with status 200 and JSON of the tables
+    .then(tables => res.status(200).json({ tables: tables }))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
+// INDEX Deal ONE CARD tables
+// GET /tables
+router.post('/tables/users/one/:id', requireToken, (req, res, next) => {
+  Table.findById(req.params.id)
+    .then(handle404)
+    .then(cards => {
+      let oldCards = cards.cards
+      let oldCardsArray = oldCards.split('')
+      const card = Math.floor(Math.random() * oldCardsArray.length - 1)
+      req.body.update.data = oldCardsArray[card]
+      oldCardsArray[card] = ''
+      let removed = ''
+      for (let i = 0; i < oldCardsArray.length; i++) {
+        if (oldCardsArray[i] !== '') {
+          removed = removed + oldCardsArray[i]
+        } else {
+          // console.log('removed letter')
+          // console.log(oldCardsArray[i])
+        }
+      }
+      cards.removed = removed
+      // console.log(removed)
+      console.log(req.body.update.data)
+      Table.findByIdAndUpdate(req.params.id, { cards: removed })
+      // Table.findByIdAndUpdate(req.params.id, { cards: 'A123456789xjqkA123456789xjqkA123456789xjqkA123456789xjqk' })
+        .then(a => a)
+        .catch(b => b)
+      return cards
+    })
+    .then(players => {
+      user.updateOneUsersCards(req.body.update.data, req.body.update.player)
     })
     // respond with status 200 and JSON of the tables
     .then(tables => res.status(200).json({ tables: tables }))
