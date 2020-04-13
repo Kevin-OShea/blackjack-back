@@ -117,7 +117,12 @@ router.post('/tables/users/:id', requireToken, (req, res, next) => {
       user.updateUsersCards(req.body, players)
     })
     // respond with status 200 and JSON of the tables
-    .then(tables => res.status(200).json({ tables: tables }))
+    // .then(tables => res.status(200).json({ tables: tables }))
+    .then(() => {
+      Table.findById(req.params.id)
+        .then(table => res.status(200).json({ tables: table }))
+        .catch(console.error)
+    })
     // if an error occurs, pass it to the handler
     .catch(next)
 })
