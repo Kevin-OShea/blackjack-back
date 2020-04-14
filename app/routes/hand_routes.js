@@ -75,7 +75,7 @@ router.post('/hands', requireToken, (req, res, next) => {
       return newHand
     })
     .then(hand => {
-      res.status(201).json({ hand: hand.toObject() })
+      return res.status(201).json({ hand: hand.toObject() })
     })
     // if an error occurs, pass it off to our error handler
     // the error handler needs the error message and the `res` object so that it

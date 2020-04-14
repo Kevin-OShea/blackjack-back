@@ -73,7 +73,7 @@ router.post('/tables/users/:id', requireToken, (req, res, next) => {
   Table.findById(req.params.id)
     .then(handle404)
     .then(cards => {
-      console.log(cards)
+      // console.log(cards)
       let oldCards = cards.cards
       let oldCardsArray = oldCards.split('')
       const length = cards.cards.length - 1
@@ -95,12 +95,12 @@ router.post('/tables/users/:id', requireToken, (req, res, next) => {
         if (oldCardsArray[i] !== '') {
           removed = removed + oldCardsArray[i]
         } else {
-          console.log('removed letter')
-          console.log(oldCardsArray[i])
+          // console.log('removed letter')
+          // console.log(oldCardsArray[i])
         }
       }
       cards.removed = removed
-      console.log(removed)
+      // console.log(removed)
       Table.findByIdAndUpdate(req.params.id, { cards: removed })
       // Table.findByIdAndUpdate(req.params.id, { cards: 'A123456789xjqkA123456789xjqkA123456789xjqkA123456789xjqk' })
         .then(a => a)
@@ -160,7 +160,11 @@ router.post('/tables/users/one/:id', requireToken, (req, res, next) => {
       user.updateOneUsersCards(req.body.update.data, req.body.update.player)
     })
     // respond with status 200 and JSON of the tables
-    .then(tables => res.status(200).json({ tables: tables }))
+    .then(cards => {
+      console.log('cards')
+      console.log(cards)
+      res.status(200).json({ cards: cards })
+    })
     // if an error occurs, pass it to the handler
     .catch(next)
 })
@@ -188,15 +192,22 @@ router.patch('/tables/join/:id', requireToken, removeBlanks, (req, res, next) =>
   Table.findByIdAndUpdate(req.params.id, { $addToSet: { players: req.user.id } }, { new: true, useFindAndModify: false })
     .then(handle404)
     // if that succeeded, return 204 and no JSON
-    .then(() => res.sendStatus(204))
+    .then(table => {
+      console.log('table below')
+      res.sendStatus(200).json({ tableId: table.toObject() })
+    })
     // if an error occurs, pass it to the handler
     .catch(next)
 })
 
+// leave table as user
 router.patch('/tables/leave/:id', requireToken, removeBlanks, (req, res, next) => {
   Table.findByIdAndUpdate(req.params.id, { $pull: { players: req.user.id } }, { new: true, useFindAndModify: false })
     .then(handle404)
     // if that succeeded, return 204 and no JSON
+    .then(() => {
+      user.clearHands(req.user.id)
+    })
     .then(() => res.sendStatus(204))
     // if an error occurs, pass it to the handler
     .catch(next)
